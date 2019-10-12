@@ -6,6 +6,8 @@
   Created by Yasin Kaya (selengalp), January 2, 2019.
 '''
 
+import operator
+from functools import reduce
 import time
 import serial
 import RPi.GPIO as GPIO
@@ -319,10 +321,16 @@ class Tracker:
 	#*** GNSS Functions ***********************************************************************
 	#******************************************************************************************
 	
+	def checksum(self, check_str):
+		return '{:02X}'.format(reduce(operator.xor, map(ord, check_str), 0))
+
+	def sentence(self, sentence_str):
+		return '$'+sentence_str+'*'+self.checksum(sentence_str)+'\r\n'
+
 	# Function for send string to L96
-	def Sendline(self):
+	def Sendline(self, text):
 		self.L96_SERIAL.wave_clear()
-		self.L96_SERIAL.wave_add_serial(L96_SOFT_TX,9600,"$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n")
+		self.L96_SERIAL.wave_add_serial(L96_SOFT_TX,9600,self.sentence(text)) #"$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n"
 		wid = self.L96_SERIAL.wave_create()
 		self.L96_SERIAL.wave_send_once(wid)
 		
