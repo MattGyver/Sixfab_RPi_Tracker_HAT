@@ -330,7 +330,7 @@ class Tracker:
 	# Function for send string to L96
 	def Sendline(self, text):
 		self.L96_SERIAL.wave_clear()
-		self.L96_SERIAL.wave_add_serial(L96_SOFT_TX,9600,self.sentence(text)) #"$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n"
+		self.L96_SERIAL.wave_add_serial(L96_SOFT_TX,9600,self.sentence(text))
 		wid = self.L96_SERIAL.wave_create()
 		self.L96_SERIAL.wave_send_once(wid)
 		
